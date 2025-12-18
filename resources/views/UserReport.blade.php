@@ -30,7 +30,16 @@
             serverSide: false, // we are not using Yajra, so keep it false
             ajax: "{{ ('getdata') }}",
             columns: [
-                {data: 'id'},
+                {
+                    data: 'id',
+                    render: function (data, type, row) {
+                        return `<a href="javascript:void(0)"
+                                class="text-blue-600 underline"
+                                onclick="openModal(${row.id}, '${row.name}', '${row.email}', '${row.role}')">
+                                    ${row.id}
+                                </a>`;
+                    }
+                },
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'role'},

@@ -18,6 +18,8 @@ Route::get('/index', function () {
 });
 
 Route::get('add-user',[AddUserController::class,'addUser']);
+Route::post('savelink',[AddUserController::class,'saveLink']);
+
 
 // Show page
 Route::get('/users', [AddUserController::class, 'userReport']);

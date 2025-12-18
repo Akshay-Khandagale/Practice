@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AddUserController;
+
 Route::get('/home', function () {
     return view('home');
 });

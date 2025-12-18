@@ -17,7 +17,7 @@
       <x-topbar />
 
       {{-- Page content --}}
-      <main class="p-6">
+      <main class="ml-64 pt-16 h-screen overflow-y-auto p-6 bg-gray-100">
         @yield('content')
       </main>
     </div>

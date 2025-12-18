@@ -5,42 +5,40 @@
 
         <h2 class="text-2xl font-bold mb-5">Add New User</h2>
 
-        <form action="" method="POST">
+        <form id="userForm">
             @csrf
 
-            <!-- Name -->
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Full Name</label>
-                <input type="text" name="name" value=""
-                       class="w-full border p-2 rounded focus:ring focus:ring-blue-300">
-               
+             <!-- Name -->
+            <div class="mb-3">
+                <label>Name</label>
+                <input type="text" name="name" class="border p-2 w-full">
+                <small class="text-red-500 error-name"></small>
             </div>
 
             <!-- Email -->
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Email Address</label>
-                <input type="email" name="email" value=""
-                       class="w-full border p-2 rounded focus:ring focus:ring-blue-300">
-              
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="border p-2 w-full mt-2">
+                <small class="text-red-500 error-email"></small>
             </div>
 
             <!-- Role -->
-
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Role</label>
-                <select name="role" class="w-full border p-2 rounded">
+            <div class="mb-3">
+                <label>Role</label>
+                <select name="role" class="border p-2 w-full">
                     <option value="">Select Role</option>
-                    <option value="TGIF">TGIF</option>
-                    <option value="MSFT">MSFT</option>
-                    <option value="WM STORM">WM STORM</option>
+                    <option value="admin" {{ old('role')=='admin'?'selected':'' }}>Admin</option>
+                    <option value="user" {{ old('role')=='user'?'selected':'' }}>User</option>
                 </select>
+                <small class="text-red-500 error-role"></small>
             </div>
 
-            <!-- Role -->
+            <!-- Address -->
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea name="address" class="border p-2 w-full">{{ old('address') }}</textarea>
 
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Link Add</label>
-                <textarea name="address" id="address" class="w-full border p-2 rounded form-control" rows="4" cols="60"></textarea>
+                <small class="text-red-500 error-address"></small>
             </div>
 
             <!-- Submit Button -->
@@ -51,6 +49,43 @@
             </div>
 
         </form>
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$('#userForm').on('submit', function(e){
+    e.preventDefault();
+
+    // clear old errors
+    $('.text-red-500').text('');
+
+    $.ajax({
+        url: '/api/savelink',
+        type: 'POST',
+        data: $(this).serialize(),
+        headers: {
+            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+        },
+        success: function(res){
+            alert(res.message);
+            $('#userForm')[0].reset();
+        },
+        error: function(xhr){
+
+            console.log(xhr.responseText); // 🔥 DEBUG LINE
+
+            if(xhr.status === 422){
+                let errors = xhr.responseJSON.errors;
+
+                $.each(errors, function(field, messages){
+                    $('.error-' + field).text(messages[0]);
+                });
+            }
+        }
+    });
+});
+</script>
+
 
     </div>
     @endsection

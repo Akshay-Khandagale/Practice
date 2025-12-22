@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AddUserController;
+use App\Http\Controllers\RegisterController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -12,17 +13,34 @@ use App\Http\Controllers\AddUserController;
 // Route::get('/ping', function () {
 //     return ['status' => 'ok from web'];
 // });
-
+// Regular user routes (or allow both)
 Route::get('/index', function () {
     return view('index');
+})->middleware('auth');
+
+
+Route::get('/admin', function () {
+    return view('admin');
 });
 
 Route::get('add-user',[AddUserController::class,'addUser']);
 Route::post('savelink',[AddUserController::class,'saveLink']);
 
 
+// Admin-only routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
 // Show page
-Route::get('/users', [AddUserController::class, 'userReport']);
+    Route::get('/users', [AddUserController::class, 'userReport']);
 
-// AJAX Request
-Route::get('/getdata', [AddUserController::class, 'getData']);
+    // AJAX Request
+    Route::get('/getdata', [AddUserController::class, 'getData']);
+});
+
+
+// New Registration
+Route::get('/register', [RegisterController::class, 'create']);
+Route::post('/register', [RegisterController::class, 'store']);
+
+// Login page and processing (web/session-based)
+Route::get('/login-page', [RegisterController::class, 'loginPage'])->name('login');
+Route::post('/login', [RegisterController::class, 'loginDetails']);  // Becomes /api/login automatically

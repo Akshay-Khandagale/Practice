@@ -3,7 +3,7 @@
 @section('content')
     <div class="max-w-xl mx-auto bg-white shadow rounded p-6 mt-10">
 
-        <h2 class="text-2xl font-bold mb-5">Add New User</h2>
+        <h2 class="text-2xl font-bold mb-5">Add New Link</h2>
 
         <form id="userForm">
             @csrf

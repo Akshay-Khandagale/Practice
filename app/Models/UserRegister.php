@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class UserRegister extends Model
+class UserRegister extends Authenticatable
 {
     //
-    use HasApiTokens;  // येथे HasApiTokens जोडा
+    use HasApiTokens, Notifiable;
     protected $table = 'users_register';
 
     protected $fillable = [
@@ -20,4 +21,6 @@ class UserRegister extends Model
         'password',
         'role',
     ];
+
+    protected $hidden = ['password', 'remember_token'];
 }

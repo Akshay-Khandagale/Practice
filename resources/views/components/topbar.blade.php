@@ -6,8 +6,6 @@
     <div class="flex items-center space-x-4">
         <span class="text-gray-600">Hello, {{ Auth::user()->name ?? 'Admin' }}</span>
 
-        <a href="/api/login-page"
-           onclick=""
-           class="text-red-500">Logout</a>
+        <a href="/api/loginpage" class="text-red-500">Logout</a>
     </div>
 </nav>

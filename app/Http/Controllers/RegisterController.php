@@ -37,36 +37,37 @@ class RegisterController extends Controller
         ], 201);
     }
 
-    public function loginPage()
+    public function createlogin()
     {
         return view('login');
     }
 
-    public function loginDetails(Request $request)
+    public function loginData(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|min:6',
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
     
-        $credentials = $request->only('email', 'password');
-    
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-    
-            $user = Auth::user();
-    
-            // Force JSON response with correct header
+        if (!Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ])) {
             return response()->json([
-                'success' => true,
-                'message' => 'Login successful',
-                'role'    => $user->role ?? 'user',  // fallback if role null
-            ]);
+                'message' => 'Invalid credentials'
+            ], 401);
         }
     
+        $user = Auth::user(); // UserRegister model
+    
+        // create sanctum token
+        $token = $user->createToken('login-token')->plainTextToken;
+    
         return response()->json([
-            'success' => false,
-            'message' => 'Invalid email or password',
-        ], 401);
+            'success' => true,
+            'message' => 'Login successful',
+            'token' => $token,
+            'user' => $user
+        ]);
     }
 }

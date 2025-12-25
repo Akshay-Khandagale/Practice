@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     //
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'Clients';
 

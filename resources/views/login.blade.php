@@ -3,7 +3,6 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
-
             <div class="card">
                 <h4 class="text-center mt-3">Login</h4>
 
@@ -13,24 +12,20 @@
 
                         <div class="mb-3">
                             <label>Email</label>
-                            <input type="email" name="email" id="email" class="form-control">
-                            <small class="text-red-500 error-email"></small>
+                            <input type="email" name="email" class="form-control">
+                            <small class="text-danger error-email"></small>
                         </div>
 
                         <div class="mb-3">
                             <label>Password</label>
-                            <input type="password" name="password" id="password" class="form-control">
-                            <small class="text-red-500 error-password"></small>
+                            <input type="password" name="password" class="form-control">
+                            <small class="text-danger error-password"></small>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
-                            Login
-                        </button>
+                        <button class="btn btn-primary w-100">Login</button>
                     </form>
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -38,48 +33,35 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-$('#loginForm').on('submit', function(e){
+$('#loginForm').submit(function(e){
     e.preventDefault();
-
-    // Clear old errors
-    $('.text-danger, .error-email, .error-password').text('');
+    $('.error-email,.error-password').text('');
 
     $.ajax({
-        url: '/api/login',  // Make sure this matches your route
+        url: '/api/loginpage',
         type: 'POST',
         data: $(this).serialize(),
-        headers: {
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'  // Important for Laravel to know it's AJAX
-        },
         success: function(res){
-            console.log(res);  // ← CHECK THIS IN BROWSER CONSOLE!
+            alert(res.message);
 
-            if(res.success === true){  // ← Use res.success, not res.status
-                alert(res.message);
+            // store token if needed
+            localStorage.setItem('token', res.token);
 
-                if(res.role === 'admin'){
-                    window.location.href = '/users';
-                } else {
-                    window.location.href = '/index';
-                }
+            // redirect
+            
+            if (res.user.role === 'admin') {
+                window.location.href = '/api/admin';
             } else {
-                alert(res.message || 'Login failed');
+                window.location.href = '/api/index';
             }
         },
         error: function(xhr){
-            console.log(xhr.responseText);
-            console.log(xhr.status);
-
             if(xhr.status === 422){
-                let errors = xhr.responseJSON?.errors || {};
-                $.each(errors, function(field, messages){
-                    $('.error-' + field).text(messages[0]);
+                $.each(xhr.responseJSON.errors, function(key, value){
+                    $('.error-'+key).text(value[0]);
                 });
-            } else if(xhr.status === 401){
-                alert('Invalid credentials');
             } else {
-                alert('Something went wrong. Check console.');
+                alert('Invalid credentials');
             }
         }
     });

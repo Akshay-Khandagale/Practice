@@ -35,13 +35,19 @@ return [
     |
     */
 
+    // 'guards' => [
+    //     'web' => [
+    //         'driver' => 'session',
+    //         'provider' => 'users',
+    //     ],
+    // ],
+
     'guards' => [
-        'web' => [
-            'driver' => 'session',
+        'sanctum' => [
+            'driver' => 'sanctum',
             'provider' => 'users',
         ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | User Providers

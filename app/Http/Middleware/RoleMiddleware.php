@@ -16,26 +16,20 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!Auth::check()) {
+        $user = $request->user();
+
+        if (!$user || !in_array($user->role, $roles)) {
+          // If request expects JSON (API)
+          if ($request->expectsJson()) {
             return response()->json([
-                'success' => false,
-                'message' => 'Unauthenticated. Please login.'
-            ], 401);
-        }
-
-        $user = Auth::user();
-
-        // If no specific roles passed, allow any authenticated user
-        if (empty($roles)) {
-            return $next($request);
-        }
-
-        // Check if user's role is in the allowed roles
-        if (!in_array($user->role, $roles)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized. Insufficient permissions.'
+                'message' => 'You cannot access this panel'
             ], 403);
+        }
+
+        // Web request → redirect with alert
+        return redirect()
+            ->back()
+            ->with('error', 'You cannot access this panel');
         }
 
         return $next($request);

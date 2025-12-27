@@ -70,29 +70,20 @@
         $('.text-red-500').text('');
 
         $.ajax({
-            url: '/api/register',
+            url: '/register',
             type: 'POST',
-            data: $(this).serialize(),
             headers: {
-                'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
+            data: $('#users').serialize(),
             success: function(res){
                 alert(res.message);
-                $('#users')[0].reset();
             },
             error: function(xhr){
-
-                console.log(xhr.responseText); // 🔥 DEBUG LINE
-
-                if(xhr.status === 422){
-                    let errors = xhr.responseJSON.errors;
-
-                    $.each(errors, function(field, messages){
-                        $('.error-' + field).text(messages[0]);
-                    });
-                }
+                console.log(xhr.responseText);
             }
         });
+
     });
     </script>
 

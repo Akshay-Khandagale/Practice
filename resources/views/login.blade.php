@@ -38,7 +38,7 @@ $('#loginForm').submit(function(e){
     $('.error-email,.error-password').text('');
 
     $.ajax({
-        url: '/api/loginpage',
+        url: '/login',   // ✅ web route
         type: 'POST',
         data: $(this).serialize(),
         success: function(res){
@@ -48,11 +48,10 @@ $('#loginForm').submit(function(e){
             localStorage.setItem('token', res.token);
 
             // redirect
-            
             if (res.user.role === 'admin') {
-                window.location.href = '/api/admin';
+                window.location.href = '/admin';
             } else {
-                window.location.href = '/api/index';
+                window.location.href = '/index';
             }
         },
         error: function(xhr){
@@ -60,6 +59,9 @@ $('#loginForm').submit(function(e){
                 $.each(xhr.responseJSON.errors, function(key, value){
                     $('.error-'+key).text(value[0]);
                 });
+            } else if(xhr.status === 401){
+                localStorage.removeItem('token');
+                window.location.href = '/login-page';
             } else {
                 alert('Invalid credentials');
             }
